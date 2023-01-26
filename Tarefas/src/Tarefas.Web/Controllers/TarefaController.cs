@@ -102,5 +102,12 @@ namespace Tarefas.Web.Controllers
 
             return View(tarefa);
         }
+        public IActionResult Delete(int id)
+        {
+            var tarefaDAO = new TarefaDAO();
+            tarefaDAO.Excluir(id);
+
+            return RedirectToAction("Index");
+        }
     }
 }
