@@ -1,17 +1,24 @@
 @model Tarefas.Web.Models.TarefaViewModel
 
+
+
 <form asp-action="Create">
 
+    <asp-validation-summary> 
     <div class="form-group">
         <label asp-for="Titulo">@Html.DisplayNameFor(model => model.Titulo)</label>
-        @Html.TextBoxFor(model => model.Titulo, new { @class = "form-control" })
+        <input asp-for="Titulo" class="form-control" asp-validation-for/>
     </div>
 
     <div class="form-group">
         <label asp-for="Descricao">@Html.DisplayNameFor(model => model.Descricao)</label>
-        @Html.TextAreaFor(model => model.Descricao, new { @class = "form-control" })
+        <input asp-for="Descricao" class="form-control" asp-validation-for/>
     </div>
-        
-    <input type="submit" class="btn btn-primary" value="Criar" />
-        
+
+    <input type="submit" class="btn btn-primary" />
+    </asp-validation-summary>
 </form>
+
+
+
+<a asp-controller="Tarefa" asp-action="Index">Voltar</a>

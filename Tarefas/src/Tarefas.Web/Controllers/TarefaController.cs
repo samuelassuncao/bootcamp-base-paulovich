@@ -67,6 +67,11 @@ namespace Tarefas.Web.Controllers
             tarefaDAO.Criar(tarefaDTO);
 
             return RedirectToAction("Index");
+
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
         }
 
         [HttpPost]
@@ -83,6 +88,11 @@ namespace Tarefas.Web.Controllers
             tarefaDAO.Atualizar(tarefaDTO);
 
             return RedirectToAction("Index");
+
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
         }
 
         public IActionResult Update(int id)
