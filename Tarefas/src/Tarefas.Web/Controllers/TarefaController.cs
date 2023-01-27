@@ -2,49 +2,40 @@ using Microsoft.AspNetCore.Mvc;
 using Tarefas.Web.Models;
 using Tarefas.DTO;
 using Tarefas.DAO;
-
+using AutoMapper;
 
 namespace Tarefas.Web.Controllers
 {
     public class TarefaController : Controller
     {
         private readonly ITarefaDAO _tarefaDAO;
+        private readonly IMapper _mapper;
 
-        public TarefaController(ITarefaDAO tarefaDAO)
+        public TarefaController(ITarefaDAO tarefaDAO, IMapper mapper)
         {
             _tarefaDAO = tarefaDAO;
+            _mapper = mapper;
         }
+
         public List<TarefaViewModel> listaDeTarefas { get; set; }
         
         public IActionResult Details(int id)
         { 
             var tarefaDTO = _tarefaDAO.Consultar(id);
 
-            var tarefa = new TarefaViewModel()
-            {
-                Id =tarefaDTO.Id,
-                Titulo = tarefaDTO.Titulo,
-                Descricao = tarefaDTO.Descricao,
-                Concluida = tarefaDTO.Concluida
-            };
-                return View(tarefa);
+            var tarefa = _mapper.Map<TarefaViewModel>(tarefaDTO);
+
+            return View (tarefa);
+
         }
         
         public IActionResult Index()
         {
             var listaDeTarefasDTO = _tarefaDAO.Consultar();
 
-            listaDeTarefas = new List<TarefaViewModel>();
-
             foreach (var tarefaDTO in listaDeTarefasDTO)
             {
-                listaDeTarefas.Add(new TarefaViewModel()
-            {
-                Id=tarefaDTO.Id,
-                Titulo=tarefaDTO.Titulo,
-                Descricao=tarefaDTO.Descricao,
-                Concluida=tarefaDTO.Concluida
-            });
+                listaDeTarefas.Add(_mapper.Map<TarefaViewModel>(tarefaDTO));
             }
             return View(listaDeTarefas);
         }
@@ -55,15 +46,10 @@ namespace Tarefas.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(TarefaViewModel tarefa)
+        public IActionResult Create(TarefaViewModel tarefaViewModel)
         {
-
-            var tarefaDTO = new TarefaDTO 
-            {
-                Titulo = tarefa.Titulo,
-                Descricao = tarefa.Descricao,
-                Concluida = tarefa.Concluida
-            };
+            //foi necessário criar a variável tarefaViewModel
+            var tarefaDTO = _mapper.Map<TarefaDTO>(tarefaViewModel);
 
             _tarefaDAO.Criar(tarefaDTO);
 
@@ -79,21 +65,14 @@ namespace Tarefas.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(TarefaViewModel tarefa)
+        public IActionResult Update(TarefaViewModel tarefaViewModel)
         {
 
             if(!ModelState.IsValid)
             {
                 return View();
             }
-            var tarefaDTO = new TarefaDTO
-            {
-                Id = tarefa.Id,
-                Titulo = tarefa.Titulo,
-                Descricao = tarefa.Descricao,
-                Concluida = tarefa.Concluida
-            };
-
+            var tarefaDTO = _mapper.Map<TarefaDTO>(tarefaViewModel);
             _tarefaDAO.Atualizar(tarefaDTO);
 
             return RedirectToAction("Index");
@@ -105,15 +84,9 @@ namespace Tarefas.Web.Controllers
             
             var tarefaDTO = _tarefaDAO.Consultar(id);
 
-            var tarefa = new TarefaViewModel()
-            {
-                Id =tarefaDTO.Id,
-                Titulo = tarefaDTO.Titulo,
-                Descricao = tarefaDTO.Descricao,
-                Concluida = tarefaDTO.Concluida
-            };
+            var tarefaViewModel = _mapper.Map<TarefaDTO>(tarefaDTO);
 
-            return View(tarefa);
+            return View(tarefaViewModel);
         }
         public IActionResult Delete(int id)
         {
