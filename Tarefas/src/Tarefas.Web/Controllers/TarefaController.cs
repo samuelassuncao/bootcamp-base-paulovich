@@ -8,17 +8,17 @@ namespace Tarefas.Web.Controllers
 {
     public class TarefaController : Controller
     {
-        private TarefaDAO tarefaDAO;
+        private readonly TarefaDAO _tarefaDAO;
 
-        public TarefaController()
+        public TarefaController(TarefaDAO tarefaDAO)
         {
-            tarefaDAO = new TarefaDAO();
+            _tarefaDAO = tarefaDAO;
         }
         public List<TarefaViewModel> listaDeTarefas { get; set; }
         
         public IActionResult Details(int id)
         { 
-            var tarefaDTO = tarefaDAO.Consultar(id);
+            var tarefaDTO = _tarefaDAO.Consultar(id);
 
             var tarefa = new TarefaViewModel()
             {
@@ -32,9 +32,9 @@ namespace Tarefas.Web.Controllers
         
         public IActionResult Index()
         {
-            var listaDeTarefasDTO = tarefaDAO.Consultar();
+            var listaDeTarefasDTO = _tarefaDAO.Consultar();
 
-            var listaDeTarefas= new List<TarefaViewModel>();
+            listaDeTarefas = new List<TarefaViewModel>();
 
             foreach (var tarefaDTO in listaDeTarefasDTO)
             {
@@ -58,12 +58,6 @@ namespace Tarefas.Web.Controllers
         public IActionResult Create(TarefaViewModel tarefa)
         {
 
-
-            if(!ModelState.IsValid)
-            {
-                return View();
-            }
-            
             var tarefaDTO = new TarefaDTO 
             {
                 Titulo = tarefa.Titulo,
@@ -71,7 +65,13 @@ namespace Tarefas.Web.Controllers
                 Concluida = tarefa.Concluida
             };
 
-            tarefaDAO.Criar(tarefaDTO);
+            _tarefaDAO.Criar(tarefaDTO);
+
+
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
 
 
             return RedirectToAction("Index");
@@ -94,7 +94,7 @@ namespace Tarefas.Web.Controllers
                 Concluida = tarefa.Concluida
             };
 
-            tarefaDAO.Atualizar(tarefaDTO);
+            _tarefaDAO.Atualizar(tarefaDTO);
 
             return RedirectToAction("Index");
 
@@ -102,7 +102,8 @@ namespace Tarefas.Web.Controllers
 
         public IActionResult Update(int id)
         {
-            var tarefaDTO = tarefaDAO.Consultar(id);
+            
+            var tarefaDTO = _tarefaDAO.Consultar(id);
 
             var tarefa = new TarefaViewModel()
             {
