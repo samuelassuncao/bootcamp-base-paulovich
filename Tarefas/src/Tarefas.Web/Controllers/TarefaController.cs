@@ -57,6 +57,13 @@ namespace Tarefas.Web.Controllers
         [HttpPost]
         public IActionResult Create(TarefaViewModel tarefa)
         {
+
+
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            
             var tarefaDTO = new TarefaDTO 
             {
                 Titulo = tarefa.Titulo,
@@ -66,17 +73,19 @@ namespace Tarefas.Web.Controllers
 
             tarefaDAO.Criar(tarefaDTO);
 
+
             return RedirectToAction("Index");
 
-            if(!ModelState.IsValid)
-            {
-                return View();
-            }
         }
 
         [HttpPost]
         public IActionResult Update(TarefaViewModel tarefa)
         {
+
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
             var tarefaDTO = new TarefaDTO
             {
                 Id = tarefa.Id,
@@ -89,10 +98,6 @@ namespace Tarefas.Web.Controllers
 
             return RedirectToAction("Index");
 
-            if(!ModelState.IsValid)
-            {
-                return View();
-            }
         }
 
         public IActionResult Update(int id)

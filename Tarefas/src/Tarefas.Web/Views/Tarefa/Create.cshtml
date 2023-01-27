@@ -1,10 +1,17 @@
 @model Tarefas.Web.Models.TarefaViewModel
 
-
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
 
 <form asp-action="Create">
 
-    <asp-validation-summary> 
+    @Html.ValidationSummary()
+
+    
     <div class="form-group">
         <label asp-for="Titulo">@Html.DisplayNameFor(model => model.Titulo)</label>
         <input asp-for="Titulo" class="form-control" asp-validation-for/>
@@ -15,8 +22,8 @@
         <input asp-for="Descricao" class="form-control" asp-validation-for/>
     </div>
 
-    <input type="submit" class="btn btn-primary" />
-    </asp-validation-summary>
+    <input type="submit" class="btn btn-primary" value="Enviar"/>
+    
 </form>
 
 
